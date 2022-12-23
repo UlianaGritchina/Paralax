@@ -12,49 +12,44 @@ struct ContentView: View {
     @State private var opacity = 0
     @Environment(\.presentationMode) var presentationMode
     var body: some View {
-        NavigationView {
-            
-            ScrollView {
-                VStack(spacing: 0) {
-                    GeometryReader { geometry in
-                        TabView {
-                            ForEach(0..<3) { _ in
-                                image(geo: geometry)
-                            }
+        ScrollView {
+            VStack(spacing: 0) {
+                GeometryReader { geometry in
+                    TabView {
+                        ForEach(0..<3) { _ in
+                            image(geo: geometry)
                         }
-                        .tabViewStyle(PageTabViewStyle())
-                        .frame(
-                            width: UIScreen.main.bounds.width,
-                            height: geometry.frame(in: .global).minY > 0
-                            ?  geometry.frame(in: .global).minY + (UIScreen.main.bounds.height / 5)
-                            : UIScreen.main.bounds.height / 5
-                        )
-                        .offset(y: -geometry.frame(in: .global).minY)
                     }
+                    .tabViewStyle(PageTabViewStyle())
                     .frame(
                         width: UIScreen.main.bounds.width,
-                        height: UIScreen.main.bounds.height / 5
+                        height: geometry.frame(in: .global).minY > 0
+                        ?  geometry.frame(in: .global).minY + (UIScreen.main.bounds.height / 5)
+                        : UIScreen.main.bounds.height / 5
                     )
-                    
-                    
-                    VStack {
-                        ForEach(0..<10) { _ in
-                            RoundedRectangle(cornerRadius: 5)
-                                .frame(height: 200)
-                        }
-                        .padding()
-                    }
-                    .background(Color.red)
+                    .offset(y: -geometry.frame(in: .global).minY)
                 }
+                .frame(
+                    width: UIScreen.main.bounds.width,
+                    height: UIScreen.main.bounds.height / 5
+                )
+                VStack {
+                    ForEach(0..<10) { _ in
+                        RoundedRectangle(cornerRadius: 5)
+                            .frame(height: 200)
+                    }
+                    .padding()
+                }
+                .background(Color.red)
             }
-            .overlay(navBar, alignment: .top)
-            
         }
+        .overlay(navBar, alignment: .top)
     }
     
     private func image(geo: GeometryProxy) -> some View {
         Image("photo")
             .resizable()
+            .scaledToFill()
             .onChange(of: geo.frame(in: .global).minY) { newValue in
                 DispatchQueue.main.async {
                     withAnimation {
